@@ -23,21 +23,27 @@ package bootstrap {
 
     def main (args: Array[String]): Unit = {
       val factory = new Factory()
-      val lorem = factory.lorem
       for (i <- 1 to 3) {
         val id = randomInt()
-        lorem.process(id)
+        val lorem = factory.createLorem(id)
+        lorem.process()
       }
     }
   }
 
   /** Factory responsible for wiring up objects */
   class Factory {
-    val amet = new Amet()
-    val sit = new Sit(amet)
-    val dolor = new Dolor(sit)
-    val ipsum = new Ipsum(dolor)
-    val lorem = new Lorem(ipsum)
+
+    /** creates lorem and all its dependencies
+      * @param id The id required by Amet */
+    def createLorem(id: Int) = {
+      val amet = new Amet(id)
+      val sit = new Sit(amet)
+      val dolor = new Dolor(sit)
+      val ipsum = new Ipsum(dolor)
+      val lorem = new Lorem(ipsum)
+      lorem
+    }
   }
 }
 
@@ -52,12 +58,10 @@ package exterior {
     */
   class Lorem(ipsum: SuperIpsum) {
 
-    /** Does Lorem processing
-      * @param id The id to pass to ipsum
-      */
-    def process(id: Int) {
-      // ... skipped fragment that ignores the id
-      ipsum.process(id)
+    /** Does Lorem processing */
+    def process() {
+      // ... skipped fragment
+      ipsum.process()
     }
   }
 
@@ -67,12 +71,11 @@ package exterior {
       "invoke method of ipsum" in {
         // given
         val ipsum = mock[SuperIpsum]
-        val id = randomInt()
         val lorem = new Lorem(ipsum)
         // when
-        lorem.process(id)
+        lorem.process()
         // then
-        there was one(ipsum).process(id)
+        there was one(ipsum).process()
       }
     }
   }
@@ -86,10 +89,8 @@ package supercentrum {
   /** Ipsum component */
   trait SuperIpsum {
 
-    /** Does Ipsum processing
-      * @param id The id
-      */
-    def process(id: Int)
+    /** Does Ipsum processing */
+    def process()
   }
 }
 /* ________________________________________________________ *
@@ -104,12 +105,10 @@ package centrum {
     */
   class Ipsum(dolor: Dolor) extends SuperIpsum {
 
-    /** Does Ipsum processing
-      * @param id The id to pass to dolor
-      */
-    def process(id: Int) {
-      // ... skipped fragment that ignores the id
-      dolor.process(id)
+    /** Does Ipsum processing */
+    def process() {
+      // ... skipped fragment
+      dolor.process()
     }
   }
 
@@ -118,12 +117,10 @@ package centrum {
     */
   class Dolor(sit: SuperSit) {
 
-    /** Does Dolor processing
-      * @param id The id to pass to sit
-      */
-    def process(id: Int) {
-      // ... skipped fragment that ignores the id
-      sit.process(id)
+    /** Does Dolor processing */
+    def process() {
+      // ... skipped fragment
+      sit.process()
     }
   }
 
@@ -133,12 +130,11 @@ package centrum {
       "invoke method of dolor" in {
         // given
         val dolor = mock[Dolor]
-        val id = randomInt()
         val ipsum = new Ipsum(dolor)
         // when
-        ipsum.process(id)
+        ipsum.process()
         // then
-        there was one(dolor).process(id)
+        there was one(dolor).process()
       }
     }
   }
@@ -149,12 +145,11 @@ package centrum {
       "invoke method of sit" in {
         // given
         val sit = mock[SuperSit]
-        val id = randomInt()
         val dolor = new Dolor(sit)
         // when
-        dolor.process(id)
+        dolor.process()
         // then
-        there was one(sit).process(id)
+        there was one(sit).process()
       }
     }
   }
@@ -167,10 +162,8 @@ package superinterior {
   /** Sit component */
   trait SuperSit {
 
-    /** Does Sit processing
-      * @param id The id
-      */
-    def process(id: Int)
+    /** Does Sit processing */
+    def process()
   }
 }
 /* ________________________________________________________ *
@@ -184,23 +177,21 @@ package interior {
     */
   class Sit(amet: Amet) extends SuperSit {
 
-    /** Does Sit processing
-      * @param id The id to pass to amet
-      */
-    def process(id: Int) {
-      // ... skipped fragment that ignores the id
-      amet.process(id)
+    /** Does Sit processing */
+    def process() {
+      // ... skipped fragment
+      amet.process()
     }
   }
 
-  /** Amet component */
-  class Amet {
+  /** Amet component
+    * @param id The id to pass to println
+    */
+  class Amet(id: Int) {
 
-    /** Does Amet processing
-      * @param id The id to pass to println
-      */
-    def process(id: Int) {
-      // ... skipped fragment that ignores the id
+    /** Does Amet processing */
+    def process() {
+      // ... skipped fragment
       println(s"Hello world! Got parameters: ($id)")
     }
   }
@@ -211,12 +202,11 @@ package interior {
       "invoke method of amet" in {
         // given
         val amet = mock[Amet]
-        val id = randomInt()
         val sit = new Sit(amet)
         // when
-        sit.process(id)
+        sit.process()
         // then
-        there was one(amet).process(id)
+        there was one(amet).process()
       }
     }
   }
