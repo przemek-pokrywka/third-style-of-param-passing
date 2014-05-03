@@ -7,7 +7,10 @@ package thirdstyle
  */
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
-import scala.util.Random.{nextInt => randomInt}
+import scala.util.Random.{
+  nextInt => randomInt,
+  nextLong => randomLong
+}
 import org.mockito.ArgumentCaptor.{forClass => argumentCaptor}
 
 /* ________________________________________________________ *
@@ -28,7 +31,8 @@ package bootstrap {
       val lorem = factory.lorem
       for (i <- 1 to 3) {
         val id = randomInt()
-        val ctx = new Context(id)
+        val size = args.length.toLong
+        val ctx = new Context(id, size)
         lorem.process(ctx)
       }
     }
@@ -53,7 +57,8 @@ package commons {
     * @param id The id
     */
   class Context(
-    var id: Int
+    var id: Int,
+    var size: Long
   )
 }
 /* ________________________________________________________ *
@@ -87,7 +92,8 @@ package exterior {
         val lorem = new Lorem(ipsum)
         //   and a completely random context
         val id = randomInt()
-        val ctx = new Context(id)
+        val size = randomLong()
+        val ctx = new Context(id, size)
         // when
         lorem.process(ctx)
         // then
@@ -97,6 +103,7 @@ package exterior {
         there was one(ipsum).process(captor.capture())
         val captured = captor.getValue
         captured.id must beEqualTo(id)
+        captured.size must beEqualTo(size)
       }
     }
   }
@@ -163,7 +170,8 @@ package centrum {
         val ipsum = new Ipsum(dolor)
         //   and a completely random context
         val id = randomInt()
-        val ctx = new Context(id)
+        val size = randomLong()
+        val ctx = new Context(id, size)
         // when
         ipsum.process(ctx)
         // then
@@ -173,6 +181,7 @@ package centrum {
         there was one(dolor).process(captor.capture())
         val captured = captor.getValue
         captured.id must beEqualTo(id)
+        captured.size must beEqualTo(size)
       }
     }
   }
@@ -187,7 +196,8 @@ package centrum {
         val dolor = new Dolor(sit)
         //   and a completely random context
         val id = randomInt()
-        val ctx = new Context(id)
+        val size = randomLong()
+        val ctx = new Context(id, size)
         // when
         dolor.process(ctx)
         // then
@@ -197,6 +207,7 @@ package centrum {
         there was one(sit).process(captor.capture())
         val captured = captor.getValue
         captured.id must beEqualTo(id)
+        captured.size must beEqualTo(size)
       }
     }
   }
@@ -245,7 +256,8 @@ package interior {
       */
     def process(ctx: Context) {
       // ... skipped fragment that ignores the ctx
-      println(s"Hello world! Got parameters: (${ctx.id})")
+      println(s"Hello world! Got parameters: " +
+        s"(${ctx.id}, ${ctx.size}})")
     }
   }
 
@@ -259,7 +271,8 @@ package interior {
         val sit = new Sit(amet)
         //   and a completely random context
         val id = randomInt()
-        val ctx = new Context(id)
+        val size = randomLong()
+        val ctx = new Context(id, size)
         // when
         sit.process(ctx)
         // then
@@ -269,6 +282,7 @@ package interior {
         there was one(amet).process(captor.capture())
         val captured = captor.getValue
         captured.id must beEqualTo(id)
+        captured.size must beEqualTo(size)
       }
     }
   }
