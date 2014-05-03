@@ -9,6 +9,7 @@ import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import scala.util.Random.{nextInt => randomInt}
 import org.mockito.ArgumentCaptor.{forClass => argumentCaptor}
+import java.util.Date
 
 /* ________________________________________________________ *
  *           The Bootstrap module                           *
@@ -28,7 +29,8 @@ package bootstrap {
       val lorem = factory.lorem
       for (i <- 1 to 3) {
         val id = randomInt()
-        val ctx = new Context(id)
+        val date = new Date()
+        val ctx = new Context(id, date)
         lorem.process(ctx)
       }
     }
@@ -53,7 +55,8 @@ package commons {
     * @param id The id
     */
   class Context(
-    var id: Int
+    var id: Int,
+    var date: Date
   )
 }
 /* ________________________________________________________ *
@@ -87,7 +90,8 @@ package exterior {
         val lorem = new Lorem(ipsum)
         //   and a completely random context
         val id = randomInt()
-        val ctx = new Context(id)
+        val date = new Date()
+        val ctx = new Context(id, date)
         // when
         lorem.process(ctx)
         // then
@@ -97,6 +101,7 @@ package exterior {
         there was one(ipsum).process(captor.capture())
         val captured = captor.getValue
         captured.id must beEqualTo(id)
+        captured.date must beEqualTo(date)
       }
     }
   }
@@ -163,7 +168,8 @@ package centrum {
         val ipsum = new Ipsum(dolor)
         //   and a completely random context
         val id = randomInt()
-        val ctx = new Context(id)
+        val date = new Date()
+        val ctx = new Context(id, date)
         // when
         ipsum.process(ctx)
         // then
@@ -173,6 +179,7 @@ package centrum {
         there was one(dolor).process(captor.capture())
         val captured = captor.getValue
         captured.id must beEqualTo(id)
+        captured.date must beEqualTo(date)
       }
     }
   }
@@ -187,7 +194,8 @@ package centrum {
         val dolor = new Dolor(sit)
         //   and a completely random context
         val id = randomInt()
-        val ctx = new Context(id)
+        val date = new Date()
+        val ctx = new Context(id, date)
         // when
         dolor.process(ctx)
         // then
@@ -197,6 +205,7 @@ package centrum {
         there was one(sit).process(captor.capture())
         val captured = captor.getValue
         captured.id must beEqualTo(id)
+        captured.date must beEqualTo(date)
       }
     }
   }
@@ -245,7 +254,8 @@ package interior {
       */
     def process(ctx: Context) {
       // ... skipped fragment that ignores the ctx
-      println(s"Hello world! Got parameters: (${ctx.id})")
+      println(s"Hello world! Got parameters: " +
+        s"(${ctx.id}, ${ctx.date}})")
     }
   }
 
@@ -259,7 +269,8 @@ package interior {
         val sit = new Sit(amet)
         //   and a completely random context
         val id = randomInt()
-        val ctx = new Context(id)
+        val date = new Date()
+        val ctx = new Context(id, date)
         // when
         sit.process(ctx)
         // then
@@ -269,6 +280,7 @@ package interior {
         there was one(amet).process(captor.capture())
         val captured = captor.getValue
         captured.id must beEqualTo(id)
+        captured.date must beEqualTo(date)
       }
     }
   }
