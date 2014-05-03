@@ -27,7 +27,8 @@ package bootstrap {
       for (i <- 1 to 3) {
         val id = randomInt()
         val date = new Date()
-        val lorem = factory.createLorem(id, date)
+        val size = args.length.toLong
+        val lorem = factory.createLorem(id, date, size)
         lorem.process()
       }
     }
@@ -38,9 +39,10 @@ package bootstrap {
 
     /** creates lorem and all its dependencies
       * @param id The id required by Amet
-      * @param date The date required by Amet */
-    def createLorem(id: Int, date: Date) = {
-      val amet = new Amet(id, date)
+      * @param date The date required by Amet
+      * @param size The size required by Amet */
+    def createLorem(id: Int, date: Date, size: Long) = {
+      val amet = new Amet(id, date, size)
       val sit = new Sit(amet)
       val dolor = new Dolor(sit)
       val ipsum = new Ipsum(dolor)
@@ -190,14 +192,15 @@ package interior {
   /** Amet component
     * @param id The id to pass to println
     * @param date The date to pass to println
+    * @param size The size to pass to println
     */
-  class Amet(id: Int, date: Date) {
+  class Amet(id: Int, date: Date, size: Long) {
 
     /** Does Amet processing */
     def process() {
       // ... skipped fragment
       println(s"Hello world! Got parameters: " +
-        s"($id, $date)")
+        s"($id, $date, $size)")
     }
   }
 
