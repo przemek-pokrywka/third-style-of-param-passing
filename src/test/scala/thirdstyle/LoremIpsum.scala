@@ -7,7 +7,10 @@ package thirdstyle
  */
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
-import scala.util.Random.{nextInt => randomInt}
+import scala.util.Random.{
+  nextInt => randomInt,
+  nextLong => randomLong
+}
 import java.util.Date
 
 /* ________________________________________________________ *
@@ -28,7 +31,8 @@ package bootstrap {
       for (i <- 1 to 3) {
         val id = randomInt()
         val date = new Date()
-        lorem.process(id, date)
+        val size = args.length.toLong
+        lorem.process(id, date, size)
       }
     }
   }
@@ -57,10 +61,11 @@ package exterior {
     /** Does Lorem processing
       * @param id The id to pass to ipsum
       * @param date The date
+      * @param size The size
       */
-    def process(id: Int, date: Date) {
+    def process(id: Int, date: Date, size: Long) {
       // ... skipped fragment that ignores the parameters
-      ipsum.process(id, date)
+      ipsum.process(id, date, size)
     }
   }
 
@@ -72,11 +77,12 @@ package exterior {
         val ipsum = mock[SuperIpsum]
         val id = randomInt()
         val date = new Date()
+        val size = randomLong()
         val lorem = new Lorem(ipsum)
         // when
-        lorem.process(id, date)
+        lorem.process(id, date, size)
         // then
-        there was one(ipsum).process(id, date)
+        there was one(ipsum).process(id, date, size)
       }
     }
   }
@@ -93,8 +99,9 @@ package supercentrum {
     /** Does Ipsum processing
       * @param id The id
       * @param date The date
+      * @param size The size
       */
-    def process(id: Int, date: Date)
+    def process(id: Int, date: Date, size: Long)
   }
 }
 /* ________________________________________________________ *
@@ -112,10 +119,11 @@ package centrum {
     /** Does Ipsum processing
       * @param id The id to pass to dolor
       * @param date The date
+      * @param size The size
       */
-    def process(id: Int, date: Date) {
+    def process(id: Int, date: Date, size: Long) {
       // ... skipped fragment that ignores the parameters
-      dolor.process(id, date)
+      dolor.process(id, date, size)
     }
   }
 
@@ -127,10 +135,11 @@ package centrum {
     /** Does Dolor processing
       * @param id The id to pass to sit
       * @param date The date
+      * @param size The size
       */
-    def process(id: Int, date: Date) {
+    def process(id: Int, date: Date, size: Long) {
       // ... skipped fragment that ignores the parameters
-      sit.process(id, date)
+      sit.process(id, date, size)
     }
   }
 
@@ -142,11 +151,12 @@ package centrum {
         val dolor = mock[Dolor]
         val id = randomInt()
         val date = new Date()
+        val size = randomLong()
         val ipsum = new Ipsum(dolor)
         // when
-        ipsum.process(id, date)
+        ipsum.process(id, date, size)
         // then
-        there was one(dolor).process(id, date)
+        there was one(dolor).process(id, date, size)
       }
     }
   }
@@ -159,11 +169,12 @@ package centrum {
         val sit = mock[SuperSit]
         val id = randomInt()
         val date = new Date()
+        val size = randomLong()
         val dolor = new Dolor(sit)
         // when
-        dolor.process(id, date)
+        dolor.process(id, date, size)
         // then
-        there was one(sit).process(id, date)
+        there was one(sit).process(id, date, size)
       }
     }
   }
@@ -179,8 +190,9 @@ package superinterior {
     /** Does Sit processing
       * @param id The id
       * @param date The date
+      * @param size The size
       */
-    def process(id: Int, date: Date)
+    def process(id: Int, date: Date, size: Long)
   }
 }
 /* ________________________________________________________ *
@@ -197,10 +209,11 @@ package interior {
     /** Does Sit processing
       * @param id The id to pass to amet
       * @param date The date
+      * @param size The size
       */
-    def process(id: Int, date: Date) {
+    def process(id: Int, date: Date, size: Long) {
       // ... skipped fragment that ignores the parameters
-      amet.process(id, date)
+      amet.process(id, date, size)
     }
   }
 
@@ -210,11 +223,12 @@ package interior {
     /** Does Amet processing
       * @param id The id to pass to println
       * @param date The date
+      * @param size The size
       */
-    def process(id: Int, date: Date) {
+    def process(id: Int, date: Date, size: Long) {
       // ... skipped fragment that ignores the parameters
       println(s"Hello world! Got parameters: " +
-        s"($id, $date)")
+        s"($id, $date, $size)")
     }
   }
 
@@ -226,11 +240,12 @@ package interior {
         val amet = mock[Amet]
         val id = randomInt()
         val date = new Date()
+        val size = randomLong()
         val sit = new Sit(amet)
         // when
-        sit.process(id, date)
+        sit.process(id, date, size)
         // then
-        there was one(amet).process(id, date)
+        there was one(amet).process(id, date, size)
       }
     }
   }
