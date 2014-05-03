@@ -8,6 +8,7 @@ package thirdstyle
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import scala.util.Random.{nextInt => randomInt}
+import java.util.Date
 
 /* ________________________________________________________ *
  *           The Bootstrap module                           *
@@ -25,7 +26,8 @@ package bootstrap {
       val factory = new Factory()
       for (i <- 1 to 3) {
         val id = randomInt()
-        val lorem = factory.createLorem(id)
+        val date = new Date()
+        val lorem = factory.createLorem(id, date)
         lorem.process()
       }
     }
@@ -35,9 +37,10 @@ package bootstrap {
   class Factory {
 
     /** creates lorem and all its dependencies
-      * @param id The id required by Amet */
-    def createLorem(id: Int) = {
-      val amet = new Amet(id)
+      * @param id The id required by Amet
+      * @param date The date required by Amet */
+    def createLorem(id: Int, date: Date) = {
+      val amet = new Amet(id, date)
       val sit = new Sit(amet)
       val dolor = new Dolor(sit)
       val ipsum = new Ipsum(dolor)
@@ -186,13 +189,15 @@ package interior {
 
   /** Amet component
     * @param id The id to pass to println
+    * @param date The date to pass to println
     */
-  class Amet(id: Int) {
+  class Amet(id: Int, date: Date) {
 
     /** Does Amet processing */
     def process() {
       // ... skipped fragment
-      println(s"Hello world! Got parameters: ($id)")
+      println(s"Hello world! Got parameters: " +
+        s"($id, $date)")
     }
   }
 
