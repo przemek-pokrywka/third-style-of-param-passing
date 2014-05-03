@@ -7,7 +7,10 @@ package thirdstyle
  */
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
-import scala.util.Random.{nextInt => randomInt}
+import scala.util.Random.{
+  nextInt => randomInt,
+  nextLong => randomLong
+}
 
 /* ________________________________________________________ *
  *           The Bootstrap module                           *
@@ -26,7 +29,8 @@ package bootstrap {
       val lorem = factory.lorem
       for (i <- 1 to 3) {
         val id = randomInt()
-        lorem.process(id)
+        val size = args.length.toLong
+        lorem.process(id, size)
       }
     }
   }
@@ -54,10 +58,11 @@ package exterior {
 
     /** Does Lorem processing
       * @param id The id to pass to ipsum
+      * @param size The size
       */
-    def process(id: Int) {
-      // ... skipped fragment that ignores the id
-      ipsum.process(id)
+    def process(id: Int, size: Long) {
+      // ... skipped fragment that ignores the parameters
+      ipsum.process(id, size)
     }
   }
 
@@ -68,11 +73,12 @@ package exterior {
         // given
         val ipsum = mock[SuperIpsum]
         val id = randomInt()
+        val size = randomLong()
         val lorem = new Lorem(ipsum)
         // when
-        lorem.process(id)
+        lorem.process(id, size)
         // then
-        there was one(ipsum).process(id)
+        there was one(ipsum).process(id, size)
       }
     }
   }
@@ -88,8 +94,9 @@ package supercentrum {
 
     /** Does Ipsum processing
       * @param id The id
+      * @param size The size
       */
-    def process(id: Int)
+    def process(id: Int, size: Long)
   }
 }
 /* ________________________________________________________ *
@@ -106,10 +113,11 @@ package centrum {
 
     /** Does Ipsum processing
       * @param id The id to pass to dolor
+      * @param size The size
       */
-    def process(id: Int) {
-      // ... skipped fragment that ignores the id
-      dolor.process(id)
+    def process(id: Int, size: Long) {
+      // ... skipped fragment that ignores the parameters
+      dolor.process(id, size)
     }
   }
 
@@ -120,10 +128,11 @@ package centrum {
 
     /** Does Dolor processing
       * @param id The id to pass to sit
+      * @param size The size
       */
-    def process(id: Int) {
-      // ... skipped fragment that ignores the id
-      sit.process(id)
+    def process(id: Int, size: Long) {
+      // ... skipped fragment that ignores the parameters
+      sit.process(id, size)
     }
   }
 
@@ -134,11 +143,12 @@ package centrum {
         // given
         val dolor = mock[Dolor]
         val id = randomInt()
+        val size = randomLong()
         val ipsum = new Ipsum(dolor)
         // when
-        ipsum.process(id)
+        ipsum.process(id, size)
         // then
-        there was one(dolor).process(id)
+        there was one(dolor).process(id, size)
       }
     }
   }
@@ -150,11 +160,12 @@ package centrum {
         // given
         val sit = mock[SuperSit]
         val id = randomInt()
+        val size = randomLong()
         val dolor = new Dolor(sit)
         // when
-        dolor.process(id)
+        dolor.process(id, size)
         // then
-        there was one(sit).process(id)
+        there was one(sit).process(id, size)
       }
     }
   }
@@ -169,8 +180,9 @@ package superinterior {
 
     /** Does Sit processing
       * @param id The id
+      * @param size The size
       */
-    def process(id: Int)
+    def process(id: Int, size: Long)
   }
 }
 /* ________________________________________________________ *
@@ -186,10 +198,11 @@ package interior {
 
     /** Does Sit processing
       * @param id The id to pass to amet
+      * @param size The size
       */
-    def process(id: Int) {
-      // ... skipped fragment that ignores the id
-      amet.process(id)
+    def process(id: Int, size: Long) {
+      // ... skipped fragment that ignores the parameters
+      amet.process(id, size)
     }
   }
 
@@ -198,10 +211,12 @@ package interior {
 
     /** Does Amet processing
       * @param id The id to pass to println
+      * @param size The size
       */
-    def process(id: Int) {
-      // ... skipped fragment that ignores the id
-      println(s"Hello world! Got parameters: ($id)")
+    def process(id: Int, size: Long) {
+      // ... skipped fragment that ignores the parameters
+      println(s"Hello world! Got parameters: " +
+        s"($id, $size)")
     }
   }
 
@@ -212,11 +227,12 @@ package interior {
         // given
         val amet = mock[Amet]
         val id = randomInt()
+        val size = randomLong()
         val sit = new Sit(amet)
         // when
-        sit.process(id)
+        sit.process(id, size)
         // then
-        there was one(amet).process(id)
+        there was one(amet).process(id, size)
       }
     }
   }
