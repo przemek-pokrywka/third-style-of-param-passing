@@ -7,7 +7,10 @@ package thirdstyle
  */
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
-import scala.util.Random.{nextInt => randomInt}
+import scala.util.Random.{
+  nextInt => randomInt,
+  nextLong => randomLong
+}
 import org.mockito.ArgumentCaptor.{forClass => argumentCaptor}
 import java.util.Date
 
@@ -30,7 +33,8 @@ package bootstrap {
       for (i <- 1 to 3) {
         val id = randomInt()
         val date = new Date()
-        val ctx = new Context(id, date)
+        val size = args.length.toLong
+        val ctx = new Context(id, date, size)
         lorem.process(ctx)
       }
     }
@@ -56,7 +60,8 @@ package commons {
     */
   class Context(
     var id: Int,
-    var date: Date
+    var date: Date,
+    var size: Long
   )
 }
 /* ________________________________________________________ *
@@ -91,7 +96,8 @@ package exterior {
         //   and a completely random context
         val id = randomInt()
         val date = new Date()
-        val ctx = new Context(id, date)
+        val size = randomLong()
+        val ctx = new Context(id, date, size)
         // when
         lorem.process(ctx)
         // then
@@ -102,6 +108,7 @@ package exterior {
         val captured = captor.getValue
         captured.id must beEqualTo(id)
         captured.date must beEqualTo(date)
+        captured.size must beEqualTo(size)
       }
     }
   }
@@ -169,7 +176,8 @@ package centrum {
         //   and a completely random context
         val id = randomInt()
         val date = new Date()
-        val ctx = new Context(id, date)
+        val size = randomLong()
+        val ctx = new Context(id, date, size)
         // when
         ipsum.process(ctx)
         // then
@@ -180,6 +188,7 @@ package centrum {
         val captured = captor.getValue
         captured.id must beEqualTo(id)
         captured.date must beEqualTo(date)
+        captured.size must beEqualTo(size)
       }
     }
   }
@@ -195,7 +204,8 @@ package centrum {
         //   and a completely random context
         val id = randomInt()
         val date = new Date()
-        val ctx = new Context(id, date)
+        val size = randomLong()
+        val ctx = new Context(id, date, size)
         // when
         dolor.process(ctx)
         // then
@@ -206,6 +216,7 @@ package centrum {
         val captured = captor.getValue
         captured.id must beEqualTo(id)
         captured.date must beEqualTo(date)
+        captured.size must beEqualTo(size)
       }
     }
   }
@@ -255,7 +266,7 @@ package interior {
     def process(ctx: Context) {
       // ... skipped fragment that ignores the ctx
       println(s"Hello world! Got parameters: " +
-        s"(${ctx.id}, ${ctx.date}})")
+        s"(${ctx.id}, ${ctx.date}, ${ctx.size})")
     }
   }
 
@@ -270,7 +281,8 @@ package interior {
         //   and a completely random context
         val id = randomInt()
         val date = new Date()
-        val ctx = new Context(id, date)
+        val size = randomLong()
+        val ctx = new Context(id, date, size)
         // when
         sit.process(ctx)
         // then
@@ -281,6 +293,7 @@ package interior {
         val captured = captor.getValue
         captured.id must beEqualTo(id)
         captured.date must beEqualTo(date)
+        captured.size must beEqualTo(size)
       }
     }
   }
