@@ -33,8 +33,7 @@ package bootstrap {
       for (i <- 1 to 3) {
         val id = randomInt()
         val date = new Date()
-        val size = args.length.toLong
-        val ctx = new Context(id, date, size)
+        val ctx = new Context(id, date, 0)
         lorem.process(ctx)
       }
     }
@@ -147,6 +146,7 @@ package centrum {
       */
     def process(ctx: Context) {
       // ... skipped fragment that ignores the ctx
+      ctx.size = randomLong()
       dolor.process(ctx)
     }
   }
@@ -176,8 +176,7 @@ package centrum {
         //   and a completely random context
         val id = randomInt()
         val date = new Date()
-        val size = randomLong()
-        val ctx = new Context(id, date, size)
+        val ctx = spy(new Context(id, date, 0))
         // when
         ipsum.process(ctx)
         // then
@@ -188,7 +187,7 @@ package centrum {
         val captured = captor.getValue
         captured.id must beEqualTo(id)
         captured.date must beEqualTo(date)
-        captured.size must beEqualTo(size)
+        there was one(ctx).size_=(anyLong)
       }
     }
   }
