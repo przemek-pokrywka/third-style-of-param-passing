@@ -7,7 +7,10 @@ package thirdstyle
  */
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
-import scala.util.Random.{nextInt => randomInt}
+import scala.util.Random.{
+  nextInt => randomInt,
+  nextLong => randomLong
+}
 import java.util.Date
 
 /* ________________________________________________________ *
@@ -27,8 +30,7 @@ package bootstrap {
       for (i <- 1 to 3) {
         val id = randomInt()
         val date = new Date()
-        val size = args.length.toLong
-        val lorem = factory.createLorem(id, date, size)
+        val lorem = factory.createLorem(id, date)
         lorem.process()
       }
     }
@@ -39,15 +41,14 @@ package bootstrap {
 
     /** creates lorem and all its dependencies
       * @param id The id required by Amet
-      * @param date The date required by Amet
-      * @param size The size required by Amet */
-    def createLorem(id: Int, date: Date, size: Long) = {
-      val amet = new Amet(id, date, size)
+      * @param date The date required by Amet */
+    def createLorem(id: Int, date: Date) = {
+      var size: Long = 0
+      val amet = new Amet(id, date, () => size)
       val sit = new Sit(amet)
       val dolor = new Dolor(sit)
-      val ipsum = new Ipsum(dolor)
-      val lorem = new Lorem(ipsum)
-      lorem
+      val ipsum = new Ipsum(dolor, (newSize: Long) => size = newSize)
+      new Lorem(ipsum)
     }
   }
 }
@@ -107,12 +108,14 @@ package centrum {
 
   /** Ipsum component implementation
     * @param dolor The Dolor that continues processing
+    * @param setSize The function for setting the size to be used later
     */
-  class Ipsum(dolor: Dolor) extends SuperIpsum {
+  class Ipsum(dolor: Dolor, setSize: Long => Unit) extends SuperIpsum {
 
     /** Does Ipsum processing */
     def process() {
       // ... skipped fragment
+      setSize(randomLong())
       dolor.process()
     }
   }
@@ -135,10 +138,12 @@ package centrum {
       "invoke method of dolor" in {
         // given
         val dolor = mock[Dolor]
-        val ipsum = new Ipsum(dolor)
+        val setSize = mock[Long => Unit]
+        val ipsum = new Ipsum(dolor, setSize)
         // when
         ipsum.process()
         // then
+        there was one(setSize).apply(anyLong)
         there was one(dolor).process()
       }
     }
@@ -192,15 +197,15 @@ package interior {
   /** Amet component
     * @param id The id to pass to println
     * @param date The date to pass to println
-    * @param size The size to pass to println
+    * @param getSize The function returning the size to pass to println
     */
-  class Amet(id: Int, date: Date, size: Long) {
+  class Amet(id: Int, date: Date, getSize: () => Long) {
 
     /** Does Amet processing */
     def process() {
       // ... skipped fragment
       println(s"Hello world! Got parameters: " +
-        s"($id, $date, $size)")
+        s"($id, $date, ${getSize()})")
     }
   }
 
