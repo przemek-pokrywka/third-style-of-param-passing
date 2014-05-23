@@ -31,8 +31,7 @@ package bootstrap {
       for (i <- 1 to 3) {
         val id = randomInt()
         val date = new Date()
-        val size = args.length.toLong
-        lorem.process(id, date, size)
+        lorem.process(id, date)
       }
     }
   }
@@ -61,11 +60,10 @@ package exterior {
     /** Does Lorem processing
       * @param id The id to pass to ipsum
       * @param date The date
-      * @param size The size
       */
-    def process(id: Int, date: Date, size: Long) {
+    def process(id: Int, date: Date) {
       // ... skipped fragment that ignores the parameters
-      ipsum.process(id, date, size)
+      ipsum.process(id, date)
     }
   }
 
@@ -77,12 +75,11 @@ package exterior {
         val ipsum = mock[SuperIpsum]
         val id = randomInt()
         val date = new Date()
-        val size = randomLong()
         val lorem = new Lorem(ipsum)
         // when
-        lorem.process(id, date, size)
+        lorem.process(id, date)
         // then
-        there was one(ipsum).process(id, date, size)
+        there was one(ipsum).process(id, date)
       }
     }
   }
@@ -99,9 +96,8 @@ package supercentrum {
     /** Does Ipsum processing
       * @param id The id
       * @param date The date
-      * @param size The size
       */
-    def process(id: Int, date: Date, size: Long)
+    def process(id: Int, date: Date)
   }
 }
 /* ________________________________________________________ *
@@ -119,10 +115,10 @@ package centrum {
     /** Does Ipsum processing
       * @param id The id to pass to dolor
       * @param date The date
-      * @param size The size
       */
-    def process(id: Int, date: Date, size: Long) {
+    def process(id: Int, date: Date) {
       // ... skipped fragment that ignores the parameters
+      val size = randomLong()
       dolor.process(id, date, size)
     }
   }
@@ -151,12 +147,11 @@ package centrum {
         val dolor = mock[Dolor]
         val id = randomInt()
         val date = new Date()
-        val size = randomLong()
         val ipsum = new Ipsum(dolor)
         // when
-        ipsum.process(id, date, size)
+        ipsum.process(id, date)
         // then
-        there was one(dolor).process(id, date, size)
+        there was one(dolor).process(equalTo(id), equalTo(date), anyLong)
       }
     }
   }
