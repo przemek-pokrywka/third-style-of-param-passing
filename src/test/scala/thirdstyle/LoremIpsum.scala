@@ -7,7 +7,10 @@ package thirdstyle
  */
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
-import scala.util.Random.{nextInt => randomInt}
+import scala.util.Random.{
+  nextInt => randomInt,
+  nextLong => randomLong
+}
 import java.util.Date
 
 /* ________________________________________________________ *
@@ -27,8 +30,7 @@ package bootstrap {
       for (i <- 1 to 3) {
         val id = randomInt()
         val date = new Date()
-        val size = args.length.toLong
-        val lorem = factory.createLorem(id, date, size)
+        val lorem = factory.createLorem(id, date)
         lorem.process()
       }
     }
@@ -39,15 +41,14 @@ package bootstrap {
 
     /** creates lorem and all its dependencies
       * @param id The id required by Amet
-      * @param date The date required by Amet
-      * @param size The size required by Amet */
-    def createLorem(id: Int, date: Date, size: Long) = {
-      val amet = new Amet(id, date, size)
-      val sit = new Sit(amet)
-      val dolor = new Dolor(sit)
-      val ipsum = new Ipsum(dolor)
-      val lorem = new Lorem(ipsum)
-      lorem
+      * @param date The date required by Amet */
+    def createLorem(id: Int, date: Date) = {
+      val ipsum = new Ipsum({ size =>
+        val amet = new Amet(id, date, size)
+        val sit = new Sit(amet)
+        new Dolor(sit)
+      })
+      new Lorem(ipsum)
     }
   }
 }
@@ -106,14 +107,16 @@ package centrum {
   import superinterior._
 
   /** Ipsum component implementation
-    * @param dolor The Dolor that continues processing
+    * @param createDolor a function that accepts a size
+    *                    and returns a Dolor instance
     */
-  class Ipsum(dolor: Dolor) extends SuperIpsum {
+  class Ipsum(createDolor: Long => Dolor) extends SuperIpsum {
 
     /** Does Ipsum processing */
     def process() {
       // ... skipped fragment
-      dolor.process()
+      val size = randomLong()
+      createDolor(size).process()
     }
   }
 
@@ -135,7 +138,7 @@ package centrum {
       "invoke method of dolor" in {
         // given
         val dolor = mock[Dolor]
-        val ipsum = new Ipsum(dolor)
+        val ipsum = new Ipsum(_ => dolor)
         // when
         ipsum.process()
         // then
