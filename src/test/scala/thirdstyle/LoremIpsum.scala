@@ -8,7 +8,6 @@ package thirdstyle
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import scala.util.Random.{nextInt => randomInt}
-import org.mockito.ArgumentCaptor.{forClass => argumentCaptor}
 
 /* ________________________________________________________ *
  *           The Bootstrap module                           *
@@ -18,7 +17,6 @@ package bootstrap {
   import exterior._
   import centrum._
   import interior._
-  import commons._
 
   /** Main class */
   object Application {
@@ -45,33 +43,20 @@ package bootstrap {
 }
 
 /* ________________________________________________________ *
- *         The Commons module                               *
- * -------------------------------------------------------- */
-package commons {
-
-  /** Holds request parameters for passing between calls
-    * @param id The id
-    */
-  class Context(
-    var id: Int
-  )
-}
-/* ________________________________________________________ *
  *         The Exterior module                              *
  * -------------------------------------------------------- */
 package exterior {
   import supercentrum._
-  import commons._
 
   /** Lorem component
     * @param ipsum The SuperIpsum that continues processing
     */
-  class Lorem(ipsum: SuperIpsum) {
+  class Lorem[T](ipsum: SuperIpsum[T]) {
 
     /** Does Lorem processing
       * @param ctx The context to pass to ipsum
       */
-    def process(ctx: Context) {
+    def process(ctx: T) {
       // ... skipped fragment that ignores the ctx
       ipsum.process(ctx)
     }
@@ -83,20 +68,17 @@ package exterior {
       "invoke method of ipsum" in {
         // given
         //   an instance
-        val ipsum = mock[SuperIpsum]
+        val ipsum = mock[SuperIpsum[AnyRef]]
         val lorem = new Lorem(ipsum)
         //   and a completely random context
-        val id = randomInt()
-        val ctx = new Context(id)
+        val ctx = mock[AnyRef]
         // when
         lorem.process(ctx)
         // then
         //   the collaborator must be called
         //   with exactly the same context
-        val captor = argumentCaptor(classOf[Context])
-        there was one(ipsum).process(captor.capture())
-        val captured = captor.getValue
-        captured.id must beEqualTo(id)
+        there were noCallsTo(ctx)
+        there was one(ipsum).process(ctx)
       }
     }
   }
@@ -106,15 +88,14 @@ package exterior {
  *                 The SuperCentrum module                  *
  * -------------------------------------------------------- */
 package supercentrum {
-  import commons._
 
   /** Ipsum component */
-  trait SuperIpsum {
+  trait SuperIpsum[T] {
 
     /** Does Ipsum processing
       * @param ctx The context
       */
-    def process(ctx: Context)
+    def process(ctx: T)
   }
 }
 /* ________________________________________________________ *
@@ -123,17 +104,16 @@ package supercentrum {
 package centrum {
   import supercentrum._
   import superinterior._
-  import commons._
 
   /** Ipsum component implementation
     * @param dolor The Dolor that continues processing
     */
-  class Ipsum(dolor: Dolor) extends SuperIpsum {
+  class Ipsum[T](dolor: Dolor[T]) extends SuperIpsum[T] {
 
     /** Does Ipsum processing
       * @param ctx The context to pass to dolor
       */
-    def process(ctx: Context) {
+    def process(ctx: T) {
       // ... skipped fragment that ignores the ctx
       dolor.process(ctx)
     }
@@ -142,12 +122,12 @@ package centrum {
   /** Dolor component
     * @param sit The SuperSit that continues processing
     */
-  class Dolor(sit: SuperSit) {
+  class Dolor[T](sit: SuperSit[T]) {
 
     /** Does Dolor processing
       * @param ctx The context to pass to sit
       */
-    def process(ctx: Context) {
+    def process(ctx: T) {
       // ... skipped fragment that ignores the ctx
       sit.process(ctx)
     }
@@ -159,20 +139,17 @@ package centrum {
       "invoke method of dolor" in {
         // given
         //   an instance
-        val dolor = mock[Dolor]
+        val dolor = mock[Dolor[AnyRef]]
         val ipsum = new Ipsum(dolor)
         //   and a completely random context
-        val id = randomInt()
-        val ctx = new Context(id)
+        val ctx = mock[AnyRef]
         // when
         ipsum.process(ctx)
         // then
         //   the collaborator must be called
         //   with exactly the same context
-        val captor = argumentCaptor(classOf[Context])
-        there was one(dolor).process(captor.capture())
-        val captured = captor.getValue
-        captured.id must beEqualTo(id)
+        there were noCallsTo(ctx)
+        there was one(dolor).process(ctx)
       }
     }
   }
@@ -183,20 +160,17 @@ package centrum {
       "invoke method of sit" in {
         // given
         //   an instance
-        val sit = mock[SuperSit]
+        val sit = mock[SuperSit[AnyRef]]
         val dolor = new Dolor(sit)
         //   and a completely random context
-        val id = randomInt()
-        val ctx = new Context(id)
+        val ctx = mock[AnyRef]
         // when
         dolor.process(ctx)
         // then
         //   the collaborator must be called
         //   with exactly the same context
-        val captor = argumentCaptor(classOf[Context])
-        there was one(sit).process(captor.capture())
-        val captured = captor.getValue
-        captured.id must beEqualTo(id)
+        there were noCallsTo(ctx)
+        there was one(sit).process(ctx)
       }
     }
   }
@@ -205,40 +179,49 @@ package centrum {
  *         The SuperInterior module                         *
  * -------------------------------------------------------- */
 package superinterior {
-  import commons._
 
   /** Sit component */
-  trait SuperSit {
+  trait SuperSit[T] {
 
     /** Does Sit processing
       * @param ctx The context
       */
-    def process(ctx: Context)
+    def process(ctx: T)
   }
 }
 /* ________________________________________________________ *
  *         The Interior module                              *
  * -------------------------------------------------------- */
 package interior {
-  import commons._
   import superinterior._
+
+  /** Holds request parameters for passing between calls
+    * @param id The id
+    */
+  class Context(
+    var id: Int
+  )
 
   /** Sit component implementation
     * @param amet The Amet that continues processing
     */
-  class Sit(amet: Amet) extends SuperSit {
+  class Sit[T](amet: SuperAmet[T]) extends SuperSit[T] {
 
     /** Does Sit processing
       * @param ctx The context to pass to amet
       */
-    def process(ctx: Context) {
+    def process(ctx: T) {
       // ... skipped fragment that ignores the ctx
       amet.process(ctx)
     }
   }
 
+  trait SuperAmet[T] {
+    def process(ctx: T)
+  }
+
   /** Amet component */
-  class Amet {
+  class Amet extends SuperAmet[Context] {
 
     /** Does Amet processing
       * @param ctx The context to pass to println
@@ -255,20 +238,17 @@ package interior {
       "invoke method of amet" in {
         // given
         //   an instance
-        val amet = mock[Amet]
+        val amet = mock[SuperAmet[AnyRef]]
         val sit = new Sit(amet)
         //   and a completely random context
-        val id = randomInt()
-        val ctx = new Context(id)
+        val ctx = mock[AnyRef]
         // when
         sit.process(ctx)
         // then
         //   the collaborator must be called
         //   with exactly the same context
-        val captor = argumentCaptor(classOf[Context])
-        there was one(amet).process(captor.capture())
-        val captured = captor.getValue
-        captured.id must beEqualTo(id)
+        there were noCallsTo(ctx)
+        there was one(amet).process(ctx)
       }
     }
   }
